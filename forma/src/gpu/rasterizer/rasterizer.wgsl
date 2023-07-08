@@ -12,26 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let WORKGROUP_SIZE = 256u;
-let MAX_INVOCATION_COUNT = 16u;
+const WORKGROUP_SIZE = 256u;
+const MAX_INVOCATION_COUNT = 16u;
 
-let TILE_WIDTH: i32 = 16;
-let TILE_WIDTH_SHIFT: u32 = 4u;
-let TILE_HEIGHT: i32 = 4;
-let TILE_HEIGHT_SHIFT: u32 = 2u;
+const TILE_WIDTH: i32 = 16;
+const TILE_WIDTH_SHIFT: u32 = 4u;
+const TILE_HEIGHT: i32 = 4;
+const TILE_HEIGHT_SHIFT: u32 = 2u;
 
-let PIXEL_WIDTH: i32 = 16;
-let PIXEL_SHIFT: u32 = 4u;
+const PIXEL_WIDTH: i32 = 16;
+const PIXEL_SHIFT: u32 = 4u;
 
-let MAX_WIDTH_SHIFT = 16u;
-let MAX_HEIGHT_SHIFT = 15u;
+const MAX_WIDTH_SHIFT = 16u;
+const MAX_HEIGHT_SHIFT = 15u;
 
-let TILE_BIAS = 1;
-let LAYER_ID_BIT_SIZE = 21u;
-let DOUBLE_AREA_MULTIPLIER_BIT_SIZE = 6u;
-let COVER_BIT_SIZE = 6u;
+const TILE_BIAS = 1;
+const LAYER_ID_BIT_SIZE = 21u;
+const DOUBLE_AREA_MULTIPLIER_BIT_SIZE = 6u;
+const COVER_BIT_SIZE = 6u;
 
-let NONE: u32 = 0xffffffffu;
+const NONE: u32 = 0xffffffffu;
 
 // black-box methods that ensure precise results in the presence of ffast-math.
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use std::{borrow::Cow, mem, num::NonZeroU32, slice, time::Duration};
+use std::{borrow::Cow, mem, slice, time::Duration};
 
 use anyhow::Error;
 use wgpu::util::DeviceExt;
@@ -186,6 +186,7 @@ impl Renderer {
                     format: wgpu::TextureFormat::Rgba16Float,
                     usage: wgpu::TextureUsages::STORAGE_BINDING
                         | wgpu::TextureUsages::TEXTURE_BINDING,
+                    view_formats: &[],
                 });
 
                 (texture, width, height)
@@ -224,6 +225,7 @@ impl Renderer {
                 dimension: wgpu::TextureDimension::D2,
                 format: wgpu::TextureFormat::Rgba16Float,
                 usage: wgpu::TextureUsages::COPY_DST | wgpu::TextureUsages::TEXTURE_BINDING,
+                view_formats: &[],
             })
         });
 
@@ -247,7 +249,7 @@ impl Renderer {
                 },
                 wgpu::ImageDataLayout {
                     offset: 0,
-                    bytes_per_row: Some(NonZeroU32::new(4 * 2 * image.width()).unwrap()),
+                    bytes_per_row: Some(4 * 2 * image.width()),
                     rows_per_image: None,
                 },
                 wgpu::Extent3d {

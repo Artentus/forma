@@ -266,7 +266,10 @@ mod tests {
         Vec<PixelSegment<TILE_WIDTH, TILE_HEIGHT>>,
         SegmentBufferView,
     ) {
-        let instance = wgpu::Instance::new(wgpu::Backends::PRIMARY);
+        let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
+            backends: wgpu::Backends::PRIMARY,
+            ..Default::default()
+        });
         let adapter = pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
             power_preference: wgpu::PowerPreference::HighPerformance,
             ..Default::default()

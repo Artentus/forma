@@ -21,7 +21,6 @@ use std::{
     fmt::Debug,
     fs,
     fs::{create_dir_all, remove_dir_all},
-    num::NonZeroU32,
     path,
     path::PathBuf,
     sync::Mutex,
@@ -59,7 +58,10 @@ fn cpu_render(composition: &mut Composition, width: usize, height: usize) -> Rgb
 }
 
 fn gpu_render(composition: &mut Composition, width: usize, height: usize) -> RgbaImage {
-    let instance = wgpu::Instance::new(wgpu::Backends::PRIMARY);
+    let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
+        backends: wgpu::Backends::PRIMARY,
+        ..Default::default()
+    });
     let adapter =
         pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions::default()))
             .expect("failed to find an appropriate adapter");
@@ -90,6 +92,7 @@ fn gpu_render(composition: &mut Composition, width: usize, height: usize) -> Rgb
         format: wgpu::TextureFormat::Rgba8UnormSrgb,
         usage: wgpu::TextureUsages::COPY_SRC | wgpu::TextureUsages::RENDER_ATTACHMENT,
         label: None,
+        view_formats: &[],
     };
     let texture = device.create_texture(&texture_desc);
 
@@ -131,8 +134,8 @@ fn gpu_render(composition: &mut Composition, width: usize, height: usize) -> Rgb
             buffer: &output_buffer,
             layout: wgpu::ImageDataLayout {
                 offset: 0,
-                bytes_per_row: NonZeroU32::new(4 * width as u32),
-                rows_per_image: NonZeroU32::new(width as u32),
+                bytes_per_row: Some(4 * width as u32),
+                rows_per_image: Some(width as u32),
             },
         },
         texture_desc.size,

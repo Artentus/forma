@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let BLOCK_WIDTH: u32 = {{block_width}}u;
-let BLOCK_HEIGHT: u32 = {{block_height}}u;
-let BLOCK_LEN: u32 = {{block_len}}u;
+const BLOCK_WIDTH: u32 = {{block_width}}u;
+const BLOCK_HEIGHT: u32 = {{block_height}}u;
+const BLOCK_LEN: u32 = {{block_len}}u;
 
 struct _u64 {
     lo: u32,
     hi: u32,
 }
 
-let MAX = _u64(0xffffffffu, 0xffffffffu);
+const MAX = _u64(0xffffffffu, 0xffffffffu);
 
 fn le(x: _u64, y: _u64) -> bool {
     return x.hi < y.hi || x.hi == y.hi && x.lo <= y.lo;

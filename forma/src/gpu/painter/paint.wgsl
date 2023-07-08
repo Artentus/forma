@@ -12,39 +12,39 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let TILE_WIDTH = 16u;
-let TILE_HEIGHT = 4u;
-let TILE_WIDTH_SHIFT = 4u;
-let TILE_HEIGHT_SHIFT = 2u;
+const TILE_WIDTH = 16u;
+const TILE_HEIGHT = 4u;
+const TILE_WIDTH_SHIFT = 4u;
+const TILE_HEIGHT_SHIFT = 2u;
 
-let MAX_WIDTH_SHIFT = 16u;
-let MAX_HEIGHT_SHIFT = 15u;
+const MAX_WIDTH_SHIFT = 16u;
+const MAX_HEIGHT_SHIFT = 15u;
 
-let BLOCK_LEN = 64u;
-let BLOCK_SHIFT = 6u;
-let BLOCK_MASK = 63u;
-let QUEUES_LEN = 128u;
-let QUEUES_MASK = 127u;
+const BLOCK_LEN = 64u;
+const BLOCK_SHIFT = 6u;
+const BLOCK_MASK = 63u;
+const QUEUES_LEN = 128u;
+const QUEUES_MASK = 127u;
 
-let PIXEL_WIDTH = 16;
+const PIXEL_WIDTH = 16;
 // Reciprocal of two times the number of subpixel:
 // DOUBLE_AREA_RECIP is 1.0 / (2.0 * PIXEL_WIDTH * PIXEL_WIDTH )
-let PIXEL_DOUBLE_AREA_RECIP = 0.001953125;
+const PIXEL_DOUBLE_AREA_RECIP = 0.001953125;
 
 // Reciprocal of the altas dimension:
 // 1 / 4096
-let ATLAS_SIZE_RECIP = 0.000244140625;
+const ATLAS_SIZE_RECIP = 0.000244140625;
 
-let LAYER_ID_NONE = 0xffffffffu;
+const LAYER_ID_NONE = 0xffffffffu;
 
 struct PixelSegment {
     lo: u32,
     hi: u32,
 }
 
-let LAYER_ID_BIT_SIZE = 21u;
-let DOUBLE_AREA_MULTIPLIER_BIT_SIZE = 6u;
-let COVER_BIT_SIZE = 6u;
+const LAYER_ID_BIT_SIZE = 21u;
+const DOUBLE_AREA_MULTIPLIER_BIT_SIZE = 6u;
+const COVER_BIT_SIZE = 6u;
 
 fn pixelSegmentTileX(seg: PixelSegment) -> i32 {
     return extractBits(
@@ -115,9 +115,9 @@ struct OptimizedSegment {
     hi: u32,
 }
 
-let DOUBLE_AREA_BIT_SIZE = 12u;
-let DOUBLE_AREA_OFFSET = 20u;
-let COVER_OFFSET = 26u;
+const DOUBLE_AREA_BIT_SIZE = 12u;
+const DOUBLE_AREA_OFFSET = 20u;
+const COVER_OFFSET = 26u;
 
 fn optimizedSegment(
     tile_x: i32,
@@ -675,27 +675,27 @@ fn painterBlendLayer(
                     let end = start_end.zw;
                     let d = end - start;
                     let p = vec2<f32>(pixel_coords) - start;
-                    var t: f32;
+                    var t0: f32;
                     switch fill_type {
                         // Linear gradient.
                         case 1u: {
-                            t = clamp(dot(p, d) / dot(d, d), 0.0, 1.0);
+                            t0 = clamp(dot(p, d) / dot(d, d), 0.0, 1.0);
                         }
                         // Linear gradient.
                         default {
-                            t = sqrt(dot(p, p) / dot(d, d));
+                            t0 = sqrt(dot(p, p) / dot(d, d));
                         }
                     }
                     var i: u32 = getGradientStopsCount(style_header) - 1u;
                     loop {
-                        if i <= 0u | getGradientStop(style_offset, i) < t { break; }
+                        if i <= 0u | getGradientStop(style_offset, i) < t0 { break; }
                         i--;
                     }
                     let from_color = getGradientColor(style_offset, i);
                     let from_stop = getGradientStop(style_offset, i);
                     let to_color = getGradientColor(style_offset, i + 1u);
                     let to_stop = getGradientStop(style_offset, i + 1u);
-                    let t = (t - from_stop) / (to_stop - from_stop);
+                    let t = (t0 - from_stop) / (to_stop - from_stop);
                     src = mix(from_color, to_color, t);
                 }
                 // Texture.

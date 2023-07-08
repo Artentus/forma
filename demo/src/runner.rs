@@ -15,7 +15,6 @@
 use std::{
     fs::File,
     io::Write,
-    num::NonZeroU32,
     time::{Duration, Instant},
 };
 
@@ -82,8 +81,11 @@ impl CpuRunner {
 
         let layout = LinearLayout::new(width as usize, width as usize * 4, height as usize);
 
-        let instance = wgpu::Instance::new(wgpu::Backends::PRIMARY);
-        let surface = unsafe { instance.create_surface(&window) };
+        let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
+            backends: wgpu::Backends::PRIMARY,
+            ..Default::default()
+        });
+        let surface = unsafe { instance.create_surface(&window).unwrap() };
         let adapter = pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
             power_preference: wgpu::PowerPreference::LowPower,
             ..Default::default()
@@ -101,6 +103,7 @@ impl CpuRunner {
             height,
             present_mode: wgpu::PresentMode::AutoVsync,
             alpha_mode: wgpu::CompositeAlphaMode::Opaque,
+            view_formats: vec![],
         };
 
         surface.configure(&device, &config);
@@ -176,8 +179,8 @@ impl Runner for CpuRunner {
             &self.buffer,
             wgpu::ImageDataLayout {
                 offset: 0,
-                bytes_per_row: NonZeroU32::new(self.config.width * 4),
-                rows_per_image: NonZeroU32::new(self.config.height),
+                bytes_per_row: Some(self.config.width * 4),
+                rows_per_image: Some(self.config.height),
             },
             wgpu::Extent3d {
                 width: self.config.width,
@@ -252,8 +255,11 @@ impl GpuRunner {
             .build(event_loop)
             .unwrap();
 
-        let instance = wgpu::Instance::new(wgpu::Backends::PRIMARY);
-        let surface = unsafe { instance.create_surface(&window) };
+        let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
+            backends: wgpu::Backends::PRIMARY,
+            ..Default::default()
+        });
+        let surface = unsafe { instance.create_surface(&window).unwrap() };
         let adapter = pollster::block_on(instance.request_adapter(&wgpu::RequestAdapterOptions {
             power_preference,
             ..Default::default()
@@ -277,7 +283,7 @@ impl GpuRunner {
         ))
         .expect("failed to get device");
 
-        let swap_chain_format = surface.get_supported_formats(&adapter)[0];
+        let swap_chain_format = surface.get_capabilities(&adapter).formats[0];
 
         let config = wgpu::SurfaceConfiguration {
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
@@ -286,6 +292,7 @@ impl GpuRunner {
             height,
             present_mode: wgpu::PresentMode::AutoVsync,
             alpha_mode: wgpu::CompositeAlphaMode::Opaque,
+            view_formats: vec![],
         };
 
         surface.configure(&device, &config);

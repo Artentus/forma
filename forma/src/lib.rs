@@ -23,7 +23,7 @@
 //!
 //! ```
 //! # use forma_render as forma;
-//! use forma::{cpu::{buffer::{BufferBuilder, layout::LinearLayout}, Renderer, RGBA}, prelude::*};
+//! use forma::{cpu::Renderer, prelude::*};
 //!
 //! fn rect(x: f32, y: f32, width: f32, height: f32) -> Path {
 //!     PathBuilder::new()
